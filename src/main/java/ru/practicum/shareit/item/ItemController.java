@@ -43,7 +43,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestParam(value="text") String text) {
+    public List<ItemDto> searchItems(@RequestParam(value = "text") String text) {
         return itemService.searchItems(text);
     }
 }
