@@ -8,8 +8,12 @@ import java.util.List;
 public interface ItemDao {
 
     Item addItem(Item item);
+
     Item editItem(int itemId, Item item);
+
     Item getItemById(int itemId);
+
     List<Item> getItems(int userId, User owner);
+
     List<Item> searchItems(String text);
 }
