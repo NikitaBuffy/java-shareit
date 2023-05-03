@@ -7,6 +7,7 @@ import ru.practicum.shareit.util.CreateValidation;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,5 +21,14 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Необходимо установить статус доступности бронирования вещи", groups = CreateValidation.class)
     private Boolean available;
+    private Booking lastBooking;
+    private Booking nextBooking;
+    private List<CommentDto> comments;
+
+    @Data
+    public static class Booking {
+        private final int id;
+        private final int bookerId;
+    }
 }
 
