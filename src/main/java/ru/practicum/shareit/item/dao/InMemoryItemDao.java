@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.UserNotFoundException;
-import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,8 +19,8 @@ import java.util.Map;
 @Primary
 public class InMemoryItemDao implements ItemDao {
 
-    private final HashMap<Integer, Item> itemMap = new HashMap<>();
-    int generatedId = 0;
+    private final HashMap<Long, Item> itemMap = new HashMap<>();
+    Long generatedId = 0L;
 
     @Override
     public Item addItem(Item item) {
@@ -31,7 +31,7 @@ public class InMemoryItemDao implements ItemDao {
     }
 
     @Override
-    public Item editItem(int itemId, Item item) {
+    public Item editItem(Long itemId, Item item) {
         if (itemMap.containsKey(itemId)) {
             Item mainItem = itemMap.get(itemId);
 
@@ -54,7 +54,7 @@ public class InMemoryItemDao implements ItemDao {
     }
 
     @Override
-    public Item getItemById(int itemId) {
+    public Item getItemById(Long itemId) {
         if (itemMap.containsKey(itemId)) {
             return itemMap.get(itemId);
         } else {
@@ -64,9 +64,9 @@ public class InMemoryItemDao implements ItemDao {
     }
 
     @Override
-    public List<Item> getItems(int userId, User owner) {
+    public List<Item> getItems(Long userId, User owner) {
         List<Item> itemList = new ArrayList<>();
-        for (Map.Entry<Integer, Item> entry : itemMap.entrySet()) {
+        for (Map.Entry<Long, Item> entry : itemMap.entrySet()) {
             if (entry.getValue().getOwner().equals(owner)) {
                 itemList.add(entry.getValue());
             }
@@ -77,7 +77,7 @@ public class InMemoryItemDao implements ItemDao {
     @Override
     public List<Item> searchItems(String text) {
         List<Item> itemsFound = new ArrayList<>();
-        for (Map.Entry<Integer, Item> entry : itemMap.entrySet()) {
+        for (Map.Entry<Long, Item> entry : itemMap.entrySet()) {
             Item item = entry.getValue();
             if (item.getName().toLowerCase().contains(text.toLowerCase()) ||
                     item.getDescription().toLowerCase().contains(text.toLowerCase()) && item.getAvailable()) {
@@ -87,7 +87,7 @@ public class InMemoryItemDao implements ItemDao {
         return itemsFound;
     }
 
-    private int generateId() {
+    private Long generateId() {
         return ++generatedId;
     }
 }
