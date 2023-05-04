@@ -73,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.getExistingItem(itemId);
         ItemDto itemDto = ItemMapper.itemToDto(item);
 
-        if (userId == item.getOwner().getId()) {
+        if (userId.equals(item.getOwner().getId())) {
             findLastAndNextBookings(itemDto);
         }
 
