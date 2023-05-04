@@ -16,8 +16,9 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.service.UserService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
@@ -38,7 +39,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto addItem(Long userId, ItemDto itemDto) {
         Item item = ItemMapper.dtoToItem(itemDto);
-        item.setOwner(userRepository.getExistingUser(userId));
+        item.setOwner(UserMapper.dtoToUser(userService.getUserById(userId)));
         Item newItem = itemRepository.save(item);
         log.info("Добавлен предмет с ID: {} - {}", newItem.getId(), newItem);
         return ItemMapper.itemToDto(newItem);
@@ -49,8 +50,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto editItem(Long userId, Long itemId, ItemDto itemDto) {
         Item mainItem = itemRepository.getExistingItem(itemId);
         Item itemDataToUpdate = ItemMapper.dtoToItem(itemDto);
-
-        if (!mainItem.getOwner().equals(userRepository.getExistingUser(userId))) {
+        if (!mainItem.getOwner().equals(UserMapper.dtoToUser(userService.getUserById(userId)))) {
             log.warn("Пользователь с ID: " + userId + " не является владельцом вещи: " + mainItem);
             throw new NotOwnerException("Редактировать вещь может только её владелец!");
         }
@@ -106,7 +106,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         Item item = itemRepository.getExistingItem(itemId);
-        User booker = userRepository.getExistingUser(userId);
+        User booker = UserMapper.dtoToUser(userService.getUserById(userId));
         List<Booking> bookings = bookingRepository.findByBookerAndItemIdAndEndBeforeAndStatus(booker, itemId,
                 LocalDateTime.now(), BookingStatus.APPROVED);
 
