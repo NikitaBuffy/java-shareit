@@ -30,7 +30,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoResponse requestBooking(int userId, BookingDtoRequest bookingDtoRequest) {
+    public BookingDtoResponse requestBooking(Long userId, BookingDtoRequest bookingDtoRequest) {
         Booking booking = BookingMapper.requestDtoToBooking(bookingDtoRequest);
         booking.setBooker(userRepository.getExistingUser(userId));
         booking.setItem(itemRepository.getExistingItem(bookingDtoRequest.getItemId()));
@@ -42,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoResponse confirmBooking(int userId, int bookingId, Boolean approved) {
+    public BookingDtoResponse confirmBooking(Long userId, Long bookingId, Boolean approved) {
         Booking booking = bookingRepository.getExistingBooking(bookingId);
         Item item = booking.getItem();
 
@@ -69,7 +69,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoResponse getBooking(int userId, int bookingId) {
+    public BookingDtoResponse getBooking(Long userId, Long bookingId) {
         Booking booking = bookingRepository.getExistingBooking(bookingId);
         User user = userRepository.getExistingUser(userId);
 
@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public List<BookingDtoResponse> getUserBookings(int userId, String state) {
+    public List<BookingDtoResponse> getUserBookings(Long userId, String state) {
         User booker = userRepository.getExistingUser(userId);
         BookingStatus status = BookingStatus.fromString(state);
 
@@ -104,7 +104,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public List<BookingDtoResponse> getOwnerBookings(int userId, String state) {
+    public List<BookingDtoResponse> getOwnerBookings(Long userId, String state) {
         User owner = userRepository.getExistingUser(userId);
         BookingStatus status = BookingStatus.fromString(state);
 

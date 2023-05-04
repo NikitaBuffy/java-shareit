@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookingDtoRequest {
 
-    private int id;
+    private Long id;
     @FutureOrPresent(message = "Дата начала бронирования не должна быть в прошлом", groups = CreateValidation.class)
     @NotNull(message = "Необходимо указать дату начала бронирования", groups = CreateValidation.class)
     private LocalDateTime start;
     @Future(message = "Дата окончания бронировая должна быть в будущем", groups = CreateValidation.class)
     @NotNull(message = "Необходимо указать дату конца бронирования", groups = CreateValidation.class)
     private LocalDateTime end;
-    private int itemId;
+    private Long itemId;
 }

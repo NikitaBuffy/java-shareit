@@ -7,11 +7,11 @@ public interface UserService {
 
     UserDto createUser(UserDto userDto);
 
-    UserDto getUserById(int userId);
+    UserDto getUserById(Long userId);
 
-    UserDto updateUser(int userId, UserDto userDto);
+    UserDto updateUser(Long userId, UserDto userDto);
 
     List<UserDto> getAllUsers();
 
-    void deleteUser(int userId);
+    void deleteUser(Long userId);
 }

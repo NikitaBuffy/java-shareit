@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookingDtoResponse {
 
-    private int id;
+    private Long id;
     private LocalDateTime start;
     private LocalDateTime end;
     private Item item;
@@ -23,13 +23,13 @@ public class BookingDtoResponse {
 
     @Data
     public static class Item {
-        private final int id;
+        private final Long id;
         private final String name;
     }
 
     @Data
     public static class User {
-        private final int id;
+        private final Long id;
         private final String name;
     }
 }

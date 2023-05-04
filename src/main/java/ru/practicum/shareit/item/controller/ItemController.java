@@ -24,25 +24,25 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId,
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                         @Validated(CreateValidation.class) @RequestBody ItemDto itemDto) {
         return itemService.addItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto editItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                         @PathVariable int itemId, @Validated(UpdateValidation.class) @RequestBody ItemDto itemDto) {
+    public ItemDto editItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                            @PathVariable Long itemId, @Validated(UpdateValidation.class) @RequestBody ItemDto itemDto) {
         return itemService.editItem(userId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") int userId,
-                               @PathVariable int itemId) {
+    public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") Long userId,
+                               @PathVariable Long itemId) {
         return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") int userId) {
+    public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemService.getItems(userId);
     }
 
@@ -52,8 +52,8 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") int userId,
-                              @PathVariable int itemId, @Valid @RequestBody CommentDto commentDto) {
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                 @PathVariable Long itemId, @Valid @RequestBody CommentDto commentDto) {
         return itemService.addComment(userId, itemId, commentDto);
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ItemDto {
 
-    private int id;
+    private Long id;
     @NotBlank(message = "Название предмета не должно быть пустым или содержать пробелы", groups = CreateValidation.class)
     private String name;
     @NotBlank(message = "Необходимо заполнить описание предмета", groups = CreateValidation.class)
@@ -27,8 +27,8 @@ public class ItemDto {
 
     @Data
     public static class Booking {
-        private final int id;
-        private final int bookerId;
+        private final Long id;
+        private final Long bookerId;
     }
 }
 

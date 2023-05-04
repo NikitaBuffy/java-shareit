@@ -9,11 +9,11 @@ public interface ItemDao {
 
     Item addItem(Item item);
 
-    Item editItem(int itemId, Item item);
+    Item editItem(Long itemId, Item item);
 
-    Item getItemById(int itemId);
+    Item getItemById(Long itemId);
 
-    List<Item> getItems(int userId, User owner);
+    List<Item> getItems(Long userId, User owner);
 
     List<Item> searchItems(String text);
 }

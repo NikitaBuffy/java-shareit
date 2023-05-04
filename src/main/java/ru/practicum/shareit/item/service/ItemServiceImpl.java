@@ -36,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto addItem(int userId, ItemDto itemDto) {
+    public ItemDto addItem(Long userId, ItemDto itemDto) {
         Item item = ItemMapper.dtoToItem(itemDto);
         item.setOwner(userRepository.getExistingUser(userId));
         Item newItem = itemRepository.save(item);
@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto editItem(int userId, int itemId, ItemDto itemDto) {
+    public ItemDto editItem(Long userId, Long itemId, ItemDto itemDto) {
         Item mainItem = itemRepository.getExistingItem(itemId);
         Item itemDataToUpdate = ItemMapper.dtoToItem(itemDto);
 
@@ -69,7 +69,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getItemById(int itemId, int userId) {
+    public ItemDto getItemById(Long itemId, Long userId) {
         Item item = itemRepository.getExistingItem(itemId);
         ItemDto itemDto = ItemMapper.itemToDto(item);
 
@@ -82,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItems(int userId) {
+    public List<ItemDto> getItems(Long userId) {
         List<ItemDto> items = itemRepository.findByOwnerId(userId)
                 .stream()
                 .map(ItemMapper::itemToDto)
@@ -104,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public CommentDto addComment(int userId, int itemId, CommentDto commentDto) {
+    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         Item item = itemRepository.getExistingItem(itemId);
         User booker = userRepository.getExistingUser(userId);
         List<Booking> bookings = bookingRepository.findByBookerAndItemIdAndEndBeforeAndStatus(booker, itemId,

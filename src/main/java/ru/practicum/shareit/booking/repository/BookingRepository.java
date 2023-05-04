@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exception.BookingNotFoundException;
@@ -10,7 +11,8 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface BookingRepository extends JpaRepository<Booking, Integer> {
+@Repository
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByBookerAndStatus(User booker, BookingStatus status);
 
@@ -18,7 +20,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findByBookerAndEndBefore(User booker, LocalDateTime currentTime);
 
-    List<Booking> findByBookerAndItemIdAndEndBeforeAndStatus(User booker, int itemId,
+    List<Booking> findByBookerAndItemIdAndEndBeforeAndStatus(User booker, Long itemId,
                                                              LocalDateTime currentTime, BookingStatus status);
 
     List<Booking> findByBookerAndStartAfter(User booker, LocalDateTime currentTime);
@@ -27,7 +29,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "WHERE booker_id = :bookerId " +
             "AND :currentTime BETWEEN start_date AND end_date",
             nativeQuery = true)
-    List<Booking> findByBookerIdAndCurrentTime(int bookerId, LocalDateTime currentTime);
+    List<Booking> findByBookerIdAndCurrentTime(Long bookerId, LocalDateTime currentTime);
 
     List<Booking> findByItemOwnerAndStatus(User owner, BookingStatus status);
 
@@ -42,13 +44,13 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "WHERE i.owner_id = :ownerId " +
             "AND :currentTime BETWEEN start_date AND end_date",
             nativeQuery = true)
-    List<Booking> findByOwnerIdAndCurrentTime(int ownerId, LocalDateTime currentTime);
+    List<Booking> findByOwnerIdAndCurrentTime(Long ownerId, LocalDateTime currentTime);
 
-    Booking findFirstByItemIdAndStartBeforeAndStatusOrderByStartDesc(int itemId, LocalDateTime currentTime, BookingStatus status);
+    Booking findFirstByItemIdAndStartBeforeAndStatusOrderByStartDesc(Long itemId, LocalDateTime currentTime, BookingStatus status);
 
-    Booking findFirstByItemIdAndStartAfterAndStatusOrderByStart(int itemId, LocalDateTime currentTime, BookingStatus status);
+    Booking findFirstByItemIdAndStartAfterAndStatusOrderByStart(Long itemId, LocalDateTime currentTime, BookingStatus status);
 
-    default Booking getExistingBooking(int bookingId) {
+    default Booking getExistingBooking(Long bookingId) {
         return findById(bookingId).orElseThrow(() -> {
             throw new BookingNotFoundException("Бронирование с ID: " + bookingId + " не существует");
         });

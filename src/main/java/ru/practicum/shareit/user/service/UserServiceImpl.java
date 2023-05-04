@@ -16,24 +16,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User newUser = repository.save(UserMapper.dtoToUser(userDto));
+        User newUser = userRepository.save(UserMapper.dtoToUser(userDto));
         log.info("Создан пользователь с ID: {} - {}", newUser.getId(), newUser);
         return UserMapper.userToDto(newUser);
     }
 
     @Override
-    public UserDto getUserById(int userId) {
-        return UserMapper.userToDto(repository.getExistingUser(userId));
+    public UserDto getUserById(Long userId) {
+        return UserMapper.userToDto(userRepository.getExistingUser(userId));
     }
 
     @Override
-    public UserDto updateUser(int userId, UserDto userDto) {
+    public UserDto updateUser(Long userId, UserDto userDto) {
         User userDataToUpdate = UserMapper.dtoToUser(userDto);
-        User mainUser = repository.getExistingUser(userId);
+        User mainUser = userRepository.getExistingUser(userId);
 
         if (userDataToUpdate.getName() != null) {
             mainUser.setName(userDataToUpdate.getName());
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
             }
             mainUser.setEmail(userDataToUpdate.getEmail());
         }
-        repository.save(mainUser);
+        userRepository.save(mainUser);
         log.info("Обновлен пользователь с ID: {}. Новые данные: {}", userId, mainUser);
 
         return UserMapper.userToDto(mainUser);
@@ -52,17 +52,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<User> users = repository.findAll();
+        List<User> users = userRepository.findAll();
         return users.stream().map(UserMapper::userToDto).collect(Collectors.toList());
     }
 
     @Override
-    public void deleteUser(int userId) {
-        repository.deleteById(userId);
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 
     private void checkEmail(User user) {
-        List<User> users = repository.findByEmailContainingIgnoreCase(user.getEmail());
+        List<User> users = userRepository.findByEmailContainingIgnoreCase(user.getEmail());
         if (!users.isEmpty()) {
             log.warn("Email: " + user.getEmail() + " уже используется другим пользователем");
             throw new ValidationException("Пользователь с таким email уже зарегистрирован!");
