@@ -24,6 +24,7 @@ public class ItemDto {
     private Booking lastBooking;
     private Booking nextBooking;
     private List<CommentDto> comments;
+    private Long requestId;
 
     @Data
     public static class Booking {

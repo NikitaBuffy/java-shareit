@@ -2,8 +2,11 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingSort;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
@@ -83,43 +86,54 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public List<BookingDtoResponse> getUserBookings(Long userId, String state) {
+    public List<BookingDtoResponse> getUserBookings(Long userId, String state, int from, int size, BookingSort sort) {
         User booker = userRepository.getExistingUser(userId);
         BookingStatus status = BookingStatus.fromString(state);
+        Pageable page = createPageRequest(from, size, sort);
 
         switch (status) {
             case CURRENT:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByBookerIdAndCurrentTime(booker.getId(), LocalDateTime.now()));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByBookerIdAndCurrentTime(booker.getId(),
+                        LocalDateTime.now(), page).getContent());
             case PAST:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByBookerAndEndBefore(booker, LocalDateTime.now()));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByBookerAndEndBefore(booker,
+                        LocalDateTime.now(), page).getContent());
             case FUTURE:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByBookerAndStartAfter(booker, LocalDateTime.now()));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByBookerAndStartAfter(booker,
+                        LocalDateTime.now(), page).getContent());
             case WAITING:
             case REJECTED:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByBookerAndStatus(booker, status));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByBookerAndStatus(booker,
+                        status, page).getContent());
             default:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByBooker(booker));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByBooker(booker, page).getContent());
         }
     }
 
     @Override
     @Transactional
-    public List<BookingDtoResponse> getOwnerBookings(Long userId, String state) {
+    public List<BookingDtoResponse> getOwnerBookings(Long userId, String state, int from, int size, BookingSort sort) {
         User owner = userRepository.getExistingUser(userId);
         BookingStatus status = BookingStatus.fromString(state);
+        Pageable page = createPageRequest(from, size, sort);
 
         switch (status) {
             case CURRENT:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByOwnerIdAndCurrentTime(owner.getId(), LocalDateTime.now()));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByOwnerIdAndCurrentTime(owner.getId(),
+                        LocalDateTime.now(), page).getContent());
             case PAST:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByItemOwnerAndEndBefore(owner, LocalDateTime.now()));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByItemOwnerAndEndBefore(owner,
+                        LocalDateTime.now(), page).getContent());
             case FUTURE:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByItemOwnerAndStartAfter(owner, LocalDateTime.now()));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByItemOwnerAndStartAfter(owner,
+                        LocalDateTime.now(), page).getContent());
             case WAITING:
             case REJECTED:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByItemOwnerAndStatus(owner, status));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByItemOwnerAndStatus(owner,
+                        status, page).getContent());
             default:
-                return BookingMapper.bookingDtoResponseListSorted(bookingRepository.findByItemOwner(owner));
+                return BookingMapper.bookingDtoResponseList(bookingRepository.findByItemOwner(owner,
+                        page).getContent());
         }
     }
 
@@ -140,5 +154,9 @@ public class BookingServiceImpl implements BookingService {
             log.warn("Бронирование {} не может начинаться и заканчиваться в одно и то же время", booking);
             throw new DateException("Дата начала и дата окончания бронирования совпадают");
         }
+    }
+
+    private PageRequest createPageRequest(int from, int size, BookingSort sort) {
+        return PageRequest.of(from / size, size, sort.getSortValue());
     }
 }
