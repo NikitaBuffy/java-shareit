@@ -156,9 +156,20 @@ class BookingServiceMockTest {
     }
 
     @Test
+    void getBooking_whenUserAssociated_thenReturnedUser() {
+        when(userRepository.getExistingUser(anyLong())).thenReturn(user);
+        when(bookingRepository.getExistingBooking(anyLong())).thenReturn(booking);
+
+        BookingDtoResponse bookingDtoResponse = bookingService.getBooking(user.getId(), 1L);
+
+        assertNotNull(bookingDtoResponse);
+    }
+
+    @Test
     void getBooking_whenUserNotAssociated_thenNotOwnerExceptionThrown() {
-        booking.setBooker(new User());
-        item.setOwner(new User());
+        when(userRepository.getExistingUser(anyLong())).thenReturn(user);
+        booking.setBooker(new User(2L, "name2", "email2@mail.ru"));
+        item.setOwner(new User(3L, "name3", "email3@mail.ru"));
         when(bookingRepository.getExistingBooking(anyLong())).thenReturn(booking);
 
         assertThrows(NotOwnerException.class, () -> bookingService.getBooking(user.getId(), 1L));
@@ -175,6 +186,7 @@ class BookingServiceMockTest {
                 .thenReturn(new PageImpl<>(List.of(booking)));
         when(bookingRepository.findByBookerAndStartAfter(any(User.class), any(LocalDateTime.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(bookingRepository.findByBooker(any(User.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(booking)));
 
         List<BookingDtoResponse> currentBooking = bookingService.getUserBookings(1L,"CURRENT",
                 0, 10, BookingSort.START_DESC);
@@ -184,11 +196,17 @@ class BookingServiceMockTest {
                 0, 10, BookingSort.START_DESC);
         List<BookingDtoResponse> rejectedBooking = bookingService.getUserBookings(1L,"REJECTED",
                 0, 10, BookingSort.START_DESC);
+        List<BookingDtoResponse> waitingBooking = bookingService.getUserBookings(1L,"WAITING",
+                0, 10, BookingSort.START_DESC);
+        List<BookingDtoResponse> allBookings = bookingService.getUserBookings(1L,"ALL",
+                0, 10, BookingSort.START_DESC);
 
         assertEquals(1, currentBooking.size());
         assertEquals(1, pastBooking.size());
         assertEquals(1, rejectedBooking.size());
+        assertEquals(1, waitingBooking.size());
         assertEquals(0, futureBooking.size());
+        assertEquals(1, allBookings.size());
     }
 
     @Test
@@ -202,6 +220,7 @@ class BookingServiceMockTest {
                 .thenReturn(new PageImpl<>(List.of(booking)));
         when(bookingRepository.findByItemOwnerAndStartAfter(any(User.class), any(LocalDateTime.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(bookingRepository.findByItemOwner(any(User.class), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(booking)));
 
         List<BookingDtoResponse> currentBooking = bookingService.getOwnerBookings(1L,"CURRENT",
                 0, 10, BookingSort.START_DESC);
@@ -211,10 +230,24 @@ class BookingServiceMockTest {
                 0, 10, BookingSort.START_DESC);
         List<BookingDtoResponse> rejectedBooking = bookingService.getOwnerBookings(1L,"REJECTED",
                 0, 10, BookingSort.START_DESC);
+        List<BookingDtoResponse> waitingBooking = bookingService.getOwnerBookings(1L,"WAITING",
+                0, 10, BookingSort.START_DESC);
+        List<BookingDtoResponse> allBookings = bookingService.getOwnerBookings(1L,"ALL",
+                0, 10, BookingSort.START_DESC);
 
         assertEquals(1, currentBooking.size());
         assertEquals(1, pastBooking.size());
         assertEquals(1, rejectedBooking.size());
+        assertEquals(1, waitingBooking.size());
         assertEquals(0, futureBooking.size());
+        assertEquals(1, allBookings.size());
+    }
+
+    @Test
+    void getOwnerBookings_whenUnknownState_thenIllegalArgumentExceptionThrown() {
+        when(userRepository.getExistingUser(anyLong())).thenReturn(user);
+
+        assertThrows(IllegalArgumentException.class, () -> bookingService.getOwnerBookings(1L,"DECLINED",
+                0, 10, BookingSort.START_DESC));
     }
 }

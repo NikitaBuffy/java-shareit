@@ -10,6 +10,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.exception.BookingException;
+import ru.practicum.shareit.exception.BookingNotFoundException;
+import ru.practicum.shareit.exception.NotOwnerException;
+import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -109,6 +113,19 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
+    void editItem_whenNotOwner_thenNotOwnerExceptionThrown() {
+        when(itemService.editItem(anyLong(), anyLong(), any(ItemDto.class))).thenThrow(NotOwnerException.class);
+
+        mockMvc.perform(patch("/items/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .content(objectMapper.writeValueAsString(itemDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NotOwnerException));
+    }
+
+    @SneakyThrows
+    @Test
     void getItemById() {
         when(itemService.getItemById(anyLong(), anyLong())).thenReturn(itemDto);
 
@@ -171,5 +188,19 @@ class ItemControllerMvcTest {
 
         assertEquals(objectMapper.writeValueAsString(commentDto), result);
         verify(itemService, times(1)).addComment(anyLong(), anyLong(), any(CommentDto.class));
+    }
+
+    @SneakyThrows
+    @Test
+    void addComment_whenBookingEmpty_thenBookingExceptionThrown() {
+        when(itemService.addComment(anyLong(), anyLong(), any(CommentDto.class))).thenThrow(BookingException.class);
+
+        mockMvc.perform(post("/items/1/comment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .content(objectMapper.writeValueAsString(commentDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BookingException));
     }
 }

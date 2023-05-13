@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.BookingNotFoundException;
+import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -228,6 +230,18 @@ class BookingRepositoryJpaTest {
         List<Booking> allBookings = bookingRepository.findByItemOwner(owner, Pageable.unpaged()).getContent();
 
         assertEquals(2, allBookings.size());
+    }
+
+    @Test
+    void getExistingBooking_whenBookingFound_thenReturnedBooking() {
+        Booking bookingFound = bookingRepository.getExistingBooking(booking.getId());
+
+        assertNotNull(bookingFound);
+    }
+
+    @Test
+    void getExistingBooking_whenBookingNotFound_thenBookingNotFoundExceptionThrown() {
+        assertThrows(BookingNotFoundException.class, () -> bookingRepository.getExistingBooking(99L));
     }
 
     @AfterEach

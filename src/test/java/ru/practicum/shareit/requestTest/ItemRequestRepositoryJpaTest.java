@@ -6,9 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Pageable;
+import ru.practicum.shareit.exception.RequestNotFoundException;
+import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequestSort;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -33,6 +36,7 @@ class ItemRequestRepositoryJpaTest {
     private User owner;
     private User requestor;
     private User requestor2;
+    private ItemRequest itemRequest;
 
     @BeforeEach
     void beforeEach() {
@@ -40,7 +44,7 @@ class ItemRequestRepositoryJpaTest {
         requestor = userRepository.save(new User(2L, "requestor", "requestor@email.ru"));
         requestor2 = userRepository.save(new User(3L, "requestor2", "requestor2@email.ru"));
         itemRepository.save(new Item(1L, "name", "description", true, owner, null));
-        itemRequestRepository.save(new ItemRequest(1L, "description", requestor, LocalDateTime.now()));
+        itemRequest = itemRequestRepository.save(new ItemRequest(1L, "description", requestor, LocalDateTime.now()));
         itemRequestRepository.save(new ItemRequest(2L, "description", requestor2, LocalDateTime.now()));
     }
 
@@ -65,6 +69,19 @@ class ItemRequestRepositoryJpaTest {
 
         assertEquals(1, itemRequests.size());
         assertEquals("requestor2", itemRequests.get(0).getRequestor().getName());
+    }
+
+    @Test
+    void getExistingRequest_whenRequestFound_thenReturnedRequest() {
+        ItemRequest requestFound = itemRequestRepository.getExistingRequest(itemRequest.getId());
+
+        assertNotNull(requestFound);
+        assertEquals("description", requestFound.getDescription());
+    }
+
+    @Test
+    void getExistingRequest_whenRequestNotFound_thenRequestNotFoundExceptionThrown() {
+        assertThrows(RequestNotFoundException.class, () -> itemRequestRepository.getExistingRequest(99L));
     }
 
     @AfterEach

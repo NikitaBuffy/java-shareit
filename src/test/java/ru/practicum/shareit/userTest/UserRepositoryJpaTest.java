@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -18,9 +19,11 @@ class UserRepositoryJpaTest {
     @Autowired
     private UserRepository userRepository;
 
+    private User user;
+
     @BeforeEach
     void beforeEach() {
-        userRepository.save(new User(1L, "name", "misha023@mail.ru"));
+        user = userRepository.save(new User(1L, "name", "misha023@mail.ru"));
     }
 
     @Test
@@ -36,6 +39,19 @@ class UserRepositoryJpaTest {
         List<User> users = userRepository.findByEmailContainingIgnoreCase("MiShA01");
 
         assertEquals(0, users.size());
+    }
+
+    @Test
+    void getExistingUser_whenUserFound_thenReturnedUser() {
+        User userFound = userRepository.getExistingUser(user.getId());
+
+        assertNotNull(userFound);
+        assertEquals("name", userFound.getName());
+    }
+
+    @Test
+    void getExistingUser_whenUserNotFound_thenUserNotFoundExceptionThrown() {
+        assertThrows(UserNotFoundException.class, () -> userRepository.getExistingUser(99L));
     }
 
     @AfterEach

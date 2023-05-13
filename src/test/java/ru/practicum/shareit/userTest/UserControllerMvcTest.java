@@ -10,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import ru.practicum.shareit.exception.UserNotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -76,6 +79,18 @@ class UserControllerMvcTest {
 
     @SneakyThrows
     @Test
+    void getUserById_whenUserNotFound_thenNotFoundExceptionThrown() {
+        when(userService.getUserById(anyLong())).thenThrow(UserNotFoundException.class);
+
+        mockMvc.perform(get("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException));
+    }
+
+    @SneakyThrows
+    @Test
     void createUser_whenUserIsValid_thenCreateUser() {
         when(userService.createUser(any(UserDto.class))).thenReturn(userDto);
 
@@ -100,7 +115,8 @@ class UserControllerMvcTest {
         mockMvc.perform(post("/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(userDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));
 
         verify(userService, never()).createUser(any(UserDto.class));
     }

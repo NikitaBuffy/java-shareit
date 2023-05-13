@@ -170,6 +170,13 @@ class ItemServiceMockTest {
     }
 
     @Test
+    void searchItems_whenSearchTextNull_thenReturnedEmptyList() {
+        List<ItemDto> items = itemService.searchItems("", 1, 1, ItemSort.ID_DESC);
+
+        assertEquals(0, items.size());
+    }
+
+    @Test
     void addComment_whenNotBooked_thenBookingExceptionThrown() {
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
         when(userService.getUserById(anyLong())).thenReturn(userDto);
@@ -194,5 +201,31 @@ class ItemServiceMockTest {
         Comment savedComment = commentArgumentCaptor.getValue();
 
         assertEquals(user.getName(), savedComment.getAuthor().getName());
+    }
+
+    @Test
+    void getItems() {
+        when(itemRepository.findByOwnerId(anyLong(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(item)));
+
+        List<ItemDto> items = itemService.getItems(1L, 0, 10, ItemSort.ID_DESC);
+
+        assertEquals(1, items.size());
+    }
+
+    @Test
+    void getItems_whenLastAndNextBookingsExist_thenReturnedWithBookings() {
+        Booking lastBooking = new Booking(1L, null, null, item, user, null);
+        Booking nextBooking = new Booking(1L, null, null, item, user, null);
+        when(itemRepository.findByOwnerId(anyLong(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(item)));
+        when(bookingRepository.findFirstByItemIdAndStartBeforeAndStatusOrderByStartDesc(anyLong(),
+                any(LocalDateTime.class), any(BookingStatus.class))).thenReturn(lastBooking);
+        when(bookingRepository.findFirstByItemIdAndStartAfterAndStatusOrderByStart(anyLong(),
+                any(LocalDateTime.class), any(BookingStatus.class))).thenReturn(nextBooking);
+
+        List<ItemDto> items = itemService.getItems(1L, 0, 10, ItemSort.ID_DESC);
+
+        assertEquals(1, items.size());
+        assertNotNull(items.get(0).getLastBooking());
+        assertNotNull(items.get(0).getNextBooking());
     }
 }
