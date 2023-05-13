@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookingController.class)
-class BookingControllerIT {
+class BookingControllerMvcTest {
 
     @Autowired
     ObjectMapper objectMapper;

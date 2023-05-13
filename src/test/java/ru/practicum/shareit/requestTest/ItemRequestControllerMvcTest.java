@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ItemRequestController.class)
-public class ItemRequestControllerIT {
+public class ItemRequestControllerMvcTest {
 
     @Autowired
     ObjectMapper objectMapper;

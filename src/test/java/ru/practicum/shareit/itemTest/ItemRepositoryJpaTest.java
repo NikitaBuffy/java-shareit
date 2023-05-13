@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-class ItemRepositoryIT {
+class ItemRepositoryJpaTest {
 
     @Autowired
     private ItemRepository itemRepository;

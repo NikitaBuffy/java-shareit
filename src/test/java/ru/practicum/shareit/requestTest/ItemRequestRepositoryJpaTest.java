@@ -19,7 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-class ItemRequestRepositoryIT {
+class ItemRequestRepositoryJpaTest {
 
     @Autowired
     private ItemRequestRepository itemRequestRepository;
