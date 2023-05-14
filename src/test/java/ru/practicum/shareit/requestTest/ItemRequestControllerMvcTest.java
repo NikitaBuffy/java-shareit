@@ -52,7 +52,7 @@ public class ItemRequestControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void addRequest_whenItemRequestValid_thenReturnedItemRequest() {
+    void shouldReturnOkAndItemRequestWhenItemRequestValidWhileAddRequest() {
         when(itemRequestService.addRequest(anyLong(), any(ItemRequestDto.class))).thenReturn(itemRequestDto);
 
         String result = mockMvc.perform(post("/requests")
@@ -70,7 +70,7 @@ public class ItemRequestControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void addRequest_whenItemRequestNotValid_thenReturnedBadRequest() {
+    void shouldReturnBadRequestWhenItemRequestNotValidWhileAddRequest() {
         itemRequestDto.setDescription(null);
         when(itemRequestService.addRequest(anyLong(), any(ItemRequestDto.class))).thenReturn(itemRequestDto);
 
@@ -86,7 +86,7 @@ public class ItemRequestControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getRequests() {
+    void shouldReturnOkAndRequestsWhileGetRequests() {
         when(itemRequestService.getRequests(anyLong())).thenReturn(items);
 
         mockMvc.perform(get("/requests")
@@ -102,7 +102,7 @@ public class ItemRequestControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getAllRequests() {
+    void shouldReturnOkAndAllRequestsWhileGetAllRequests() {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("from", "0");
         params.add("size", "100");
@@ -124,7 +124,7 @@ public class ItemRequestControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getRequestById() {
+    void shouldReturnOkAndRequestById() {
         when(itemRequestService.getRequestById(anyLong(), anyLong())).thenReturn(itemRequestDto);
 
         mockMvc.perform(get("/requests/1")

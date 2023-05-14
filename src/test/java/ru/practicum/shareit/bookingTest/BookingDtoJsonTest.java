@@ -21,7 +21,7 @@ class BookingDtoJsonTest {
 
     @SneakyThrows
     @Test
-    void testCommentDto() {
+    void shouldSerializeBookingDtoToJson() {
         BookingDtoResponse bookingDtoResponse = new BookingDtoResponse(1L,
                 LocalDateTime.of(2023, 5, 13, 15, 10, 1),
                 LocalDateTime.of(2023, 5, 14, 15, 10, 1),

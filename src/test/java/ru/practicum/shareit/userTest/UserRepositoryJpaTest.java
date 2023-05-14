@@ -27,7 +27,7 @@ class UserRepositoryJpaTest {
     }
 
     @Test
-    void findByEmailContainingIgnoreCase_whenEmailExists_thenReturnedUser() {
+    void shouldReturnUserWhenEmailExistsWhileFindByEmail() {
         List<User> users = userRepository.findByEmailContainingIgnoreCase("MiShA");
 
         assertEquals(1, users.size());
@@ -35,14 +35,14 @@ class UserRepositoryJpaTest {
     }
 
     @Test
-    void findByEmailContainingIgnoreCase_whenEmailNotExists_thenReturnedEmptyList() {
+    void shouldReturnEmptyListWhenEmailNotExistsWhileFindByEmail() {
         List<User> users = userRepository.findByEmailContainingIgnoreCase("MiShA01");
 
         assertEquals(0, users.size());
     }
 
     @Test
-    void getExistingUser_whenUserFound_thenReturnedUser() {
+    void shouldReturnUserWhenUserFound() {
         User userFound = userRepository.getExistingUser(user.getId());
 
         assertNotNull(userFound);
@@ -50,7 +50,7 @@ class UserRepositoryJpaTest {
     }
 
     @Test
-    void getExistingUser_whenUserNotFound_thenUserNotFoundExceptionThrown() {
+    void shouldThrowUserNotFoundExceptionWhenUserNotFound() {
         assertThrows(UserNotFoundException.class, () -> userRepository.getExistingUser(99L));
     }
 

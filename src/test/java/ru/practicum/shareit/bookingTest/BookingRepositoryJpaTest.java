@@ -48,7 +48,7 @@ class BookingRepositoryJpaTest {
 
     //Booker
     @Test
-    void findByBookerAndEndBefore_whenPastBookingExists_thenReturnedPastBooking() {
+    void shouldReturnPastBookingForBookerWhenPastBookingExists() {
         booking.setStart(LocalDateTime.now().minusMinutes(20));
         booking.setEnd(LocalDateTime.now().minusMinutes(5));
         List<Booking> pastBookings = bookingRepository.findByBookerAndEndBefore(booker, LocalDateTime.now(),
@@ -58,7 +58,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBookerAndEndBefore_whenPastBookingNotExists_thenReturnedEmpty() {
+    void shouldReturnEmptyListForBookerWhenPastBookingNotExists() {
         List<Booking> pastBookings = bookingRepository.findByBookerAndEndBefore(booker, LocalDateTime.now(),
                 Pageable.unpaged()).getContent();
 
@@ -66,7 +66,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBookerAndStartAfter_whenFutureBookingExists_thenReturnedFutureBooking() {
+    void shouldReturnFutureBookingForBookerWhenFutureBookingExists() {
         booking.setStart(LocalDateTime.now().plusMinutes(10));
         booking.setEnd(LocalDateTime.now().plusMinutes(15));
         List<Booking> futureBookings = bookingRepository.findByBookerAndStartAfter(booker, LocalDateTime.now(),
@@ -76,7 +76,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBookerAndStartAfter_whenFutureBookingNotExists_thenReturnedEmptyList() {
+    void shouldReturnEmptyListForBookerWhenFutureBookingNotExists() {
         List<Booking> futureBookings = bookingRepository.findByBookerAndStartAfter(booker, LocalDateTime.now(),
                 Pageable.unpaged()).getContent();
 
@@ -84,7 +84,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBookerIdAndCurrentTime_whenNotBooker_thenReturnedEmptyList() {
+    void shouldReturnEmptyListWhenNotBooker() {
         booking.setBooker(owner);
         List<Booking> bookings = bookingRepository.findByBookerIdAndCurrentTime(booker.getId(), LocalDateTime.now(),
                 Pageable.unpaged()).getContent();
@@ -93,7 +93,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBookerIdAndCurrentTime_whenCurrentBookingExists_thenReturnedCurrentBooking() {
+    void shouldReturnCurrentBookingForBookerWhenCurrentBookingExists() {
         List<Booking> currentBookings = bookingRepository.findByBookerIdAndCurrentTime(booker.getId(), LocalDateTime.now(),
                 Pageable.unpaged()).getContent();
 
@@ -101,7 +101,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBookerIdAndCurrentTime_whenCurrentBookingNotExists_thenReturnedEmptyList() {
+    void shouldReturnEmptyListForBookerWhenCurrentBookingNotExists() {
         booking.setStart(LocalDateTime.now().plusMinutes(10));
         booking.setEnd(LocalDateTime.now().plusMinutes(15));
         List<Booking> currentBookings = bookingRepository.findByBookerIdAndCurrentTime(booker.getId(), LocalDateTime.now(),
@@ -111,7 +111,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBookerAndStatus_whenStatusRejected_thenReturnedRejectedBooking() {
+    void shouldReturnRejectedBookingForBookerWhenStatusRejected() {
         booking.setStatus(BookingStatus.REJECTED);
         List<Booking> rejectedBookings = bookingRepository.findByBookerAndStatus(booker, BookingStatus.REJECTED,
                 Pageable.unpaged()).getContent();
@@ -121,7 +121,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBookerAndStatus_whenStatusWaiting_thenReturnedWaitingBooking() {
+    void shouldReturnWaitingBookingForBookerWhenStatusWaiting() {
         List<Booking> waitingBookings = bookingRepository.findByBookerAndStatus(booker, BookingStatus.WAITING,
                 Pageable.unpaged()).getContent();
 
@@ -130,7 +130,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByBooker() {
+    void shouldFindByBooker() {
         bookingRepository.save(new Booking(2L, LocalDateTime.now(), LocalDateTime.now().plusMinutes(5), item, booker,
                 BookingStatus.WAITING));
         List<Booking> allBookings = bookingRepository.findByBooker(booker, Pageable.unpaged()).getContent();
@@ -140,7 +140,7 @@ class BookingRepositoryJpaTest {
 
     //Owner
     @Test
-    void findByOwnerIdAndCurrentTime_whenNotItemOwner_thenReturnedEmptyList() {
+    void shouldReturnEmptyListWhenNotItemOwner() {
         item.setOwner(booker);
         List<Booking> currentBookings = bookingRepository.findByOwnerIdAndCurrentTime(owner.getId(), LocalDateTime.now(),
                 Pageable.unpaged()).getContent();
@@ -149,7 +149,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByOwnerIdAndCurrentTime_whenCurrentBookingExists_thenReturnedCurrentBooking() {
+    void shouldReturnCurrentBookingForOwnerWhenCurrentBookingExists() {
         List<Booking> currentBookings = bookingRepository.findByOwnerIdAndCurrentTime(owner.getId(), LocalDateTime.now(),
                 Pageable.unpaged()).getContent();
 
@@ -157,7 +157,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByOwnerIdAndCurrentTime_whenCurrentBookingNotExists_thenReturnedEmptyList() {
+    void shouldReturnEmptyListForOwnerWhenCurrentBookingNotExists() {
         booking.setStart(LocalDateTime.now().minusMinutes(20));
         booking.setEnd(LocalDateTime.now().minusMinutes(5));
         List<Booking> currentBookings = bookingRepository.findByOwnerIdAndCurrentTime(owner.getId(), LocalDateTime.now(),
@@ -167,7 +167,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByItemOwnerAndEndBefore_whenPastBookingExists_thenReturnedPastBooking() {
+    void shouldReturnPastBookingForOwnerWhenPastBookingExists() {
         booking.setStart(LocalDateTime.now().minusMinutes(20));
         booking.setEnd(LocalDateTime.now().minusMinutes(5));
         List<Booking> pastBookings = bookingRepository.findByItemOwnerAndEndBefore(owner, LocalDateTime.now(),
@@ -177,7 +177,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByItemOwnerAndEndBefore_whenPastBookingNotExists_thenReturnedEmptyList() {
+    void shouldReturnEmptyListForOwnerWhenPastBookingNotExists() {
         List<Booking> pastBookings = bookingRepository.findByItemOwnerAndEndBefore(owner, LocalDateTime.now(),
                 Pageable.unpaged()).getContent();
 
@@ -185,7 +185,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByItemOwnerAndStartAfter_whenFutureBookingExists_thenReturnedFutureBooking() {
+    void shouldReturnFutureBookingForOwnerWhenFutureBookingExists() {
         booking.setStart(LocalDateTime.now().plusMinutes(10));
         booking.setEnd(LocalDateTime.now().plusMinutes(15));
         List<Booking> futureBookings = bookingRepository.findByItemOwnerAndStartAfter(owner, LocalDateTime.now(),
@@ -195,7 +195,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByItemOwnerAndStartAfter_whenFutureBookingNotExists_thenReturnedEmptyList() {
+    void shouldReturnEmptyListForOwnerWhenFutureBookingNotExists() {
         List<Booking> futureBookings = bookingRepository.findByItemOwnerAndStartAfter(owner, LocalDateTime.now(),
                 Pageable.unpaged()).getContent();
 
@@ -203,7 +203,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByItemOwnerAndStatus_whenStatusWaiting_returnedWaitingBooking() {
+    void shouldReturnWaitingBookingForOwnerWhenStatusWaiting() {
         List<Booking> waitingBookings = bookingRepository.findByItemOwnerAndStatus(owner, BookingStatus.WAITING,
                 Pageable.unpaged()).getContent();
 
@@ -212,7 +212,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByItemOwnerAndStatus_whenStatusRejected_returnedRejectedBooking() {
+    void shouldReturnRejectedBookingForOwnerWhenStatusRejected() {
         booking.setStatus(BookingStatus.REJECTED);
         List<Booking> rejectedBookings = bookingRepository.findByItemOwnerAndStatus(owner, BookingStatus.REJECTED,
                 Pageable.unpaged()).getContent();
@@ -222,7 +222,7 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void findByItemOwner() {
+    void shouldFindByItemOwner() {
         Item item2 = itemRepository.save(new Item(2L, "name2", "description2", true, owner, null));
         bookingRepository.save(new Booking(2L, LocalDateTime.now(), LocalDateTime.now().plusMinutes(5), item2, booker,
                 BookingStatus.WAITING));
@@ -232,14 +232,14 @@ class BookingRepositoryJpaTest {
     }
 
     @Test
-    void getExistingBooking_whenBookingFound_thenReturnedBooking() {
+    void shouldReturnExistingBookingWhenBookingFound() {
         Booking bookingFound = bookingRepository.getExistingBooking(booking.getId());
 
         assertNotNull(bookingFound);
     }
 
     @Test
-    void getExistingBooking_whenBookingNotFound_thenBookingNotFoundExceptionThrown() {
+    void shouldThrowBookingNotFoundExceptionWhenBookingNotFound() {
         assertThrows(BookingNotFoundException.class, () -> bookingRepository.getExistingBooking(99L));
     }
 

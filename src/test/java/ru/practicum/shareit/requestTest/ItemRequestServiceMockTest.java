@@ -57,7 +57,7 @@ class ItemRequestServiceMockTest {
     }
 
     @Test
-    void addRequest_whenUserNotExists_thenUserNotFoundExceptionThrown() {
+    void shouldThrowUserNotFoundExceptionWhenUserNotExistsWhileAddRequest() {
         when(userRepository.getExistingUser(anyLong())).thenThrow(UserNotFoundException.class);
 
         assertThrows(UserNotFoundException.class, () -> itemRequestService.addRequest(user.getId(), itemRequestDto));
@@ -65,7 +65,7 @@ class ItemRequestServiceMockTest {
     }
 
     @Test
-    void addRequest_whenUserExists_thenReturnedRequest() {
+    void shouldAddRequestWhenUserExists() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(requestRepository.save(any(ItemRequest.class))).thenReturn(itemRequest);
 
@@ -76,7 +76,7 @@ class ItemRequestServiceMockTest {
     }
 
     @Test
-    void getRequests_whenNoItemsFound_thenReturnedRequest() {
+    void shouldReturnRequestWithoutItemsWhenNoItemsFoundWhileGetRequest() {
         List<ItemRequest> items = List.of(itemRequest);
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(requestRepository.findByRequestorIdOrderByCreatedDesc(user.getId())).thenReturn(items);
@@ -88,7 +88,7 @@ class ItemRequestServiceMockTest {
     }
 
     @Test
-    void getRequests_whenItemsFound_thenReturnedRequestsWithItems() {
+    void shouldReturnRequestWithItemsWhenItemsFoundWhileGetRequest() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(requestRepository.findByRequestorIdOrderByCreatedDesc(user.getId())).thenReturn(List.of(itemRequest));
         when(itemRepository.findByRequestId(anyLong())).thenReturn(List.of(item));
@@ -101,7 +101,7 @@ class ItemRequestServiceMockTest {
     }
 
     @Test
-    void getAllRequests() {
+    void shouldReturnAllRequests() {
         when(requestRepository.findAllOtherRequests(anyLong(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
 
@@ -111,7 +111,7 @@ class ItemRequestServiceMockTest {
     }
 
     @Test
-    void getRequestById_whenRequestNotFound_thenRequestNotFoundExceptionThrown() {
+    void shouldThrowRequestNotFoundExceptionWhenRequestNotFoundById() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(requestRepository.getExistingRequest(anyLong())).thenThrow(RequestNotFoundException.class);
 
@@ -119,7 +119,7 @@ class ItemRequestServiceMockTest {
     }
 
     @Test
-    void getRequestById_whenRequestFound_thenReturnedRequest() {
+    void shouldReturnRequestWhenRequestFoundById() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(requestRepository.getExistingRequest(anyLong())).thenReturn(itemRequest);
 

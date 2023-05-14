@@ -44,7 +44,7 @@ class UserServiceMockTest {
     }
 
     @Test
-    void createUser() {
+    void shouldCreateUser() {
         when(userRepository.save(user)).thenReturn(user);
 
         UserDto actualUser = userService.createUser(userDto);
@@ -54,7 +54,7 @@ class UserServiceMockTest {
     }
 
     @Test
-    void getUserById_whenUserFound_thenReturnedUser() {
+    void shouldReturnUserWhenUserFoundById() {
         when(userRepository.getExistingUser(userDto.getId())).thenReturn(user);
 
         UserDto actualUser = userService.getUserById(userDto.getId());
@@ -63,14 +63,14 @@ class UserServiceMockTest {
     }
 
     @Test
-    void getUserById_whenUserNotFound_thenUserNotFoundExceptionThrown() {
+    void shouldThrowUserNotFoundExceptionWhenUserNotFoundById() {
         when(userRepository.getExistingUser(userDto.getId())).thenThrow(UserNotFoundException.class);
 
         assertThrows(UserNotFoundException.class, () -> userService.getUserById(userDto.getId()));
     }
 
     @Test
-    void updateUser_whenUserFound_thenUpdateUser() {
+    void shouldUpdateUserWhenUserFound() {
         User mainUser = new User(1L, "name", "mail@mail.ru");
         UserDto userDataToUpdate = new UserDto(1L, "updatedName", "updatedMail@mail.ru");
         when(userRepository.getExistingUser(mainUser.getId())).thenReturn(mainUser);
@@ -85,7 +85,7 @@ class UserServiceMockTest {
     }
 
     @Test
-    void updateUser_whenUserFoundAndUpdateEmail_thenUpdateOnlyEmail() {
+    void shouldUpdateOnlyEmailWhenUserFoundAndUpdateEmail() {
         User mainUser = new User(1L, "name", "mail@mail.ru");
         UserDto userDataToUpdate = new UserDto(1L, "name", "updatedMail@mail.ru");
         when(userRepository.getExistingUser(mainUser.getId())).thenReturn(mainUser);
@@ -100,7 +100,7 @@ class UserServiceMockTest {
     }
 
     @Test
-    void updateUser_whenUserFoundAndUpdateEmailExists_thenValidationExceptionThrown() {
+    void shouldThrowValidationExceptionWhenUserFoundAndUpdateEmailExists() {
         User mainUser = new User(1L, "name", "mail@mail.ru");
         UserDto userDataToUpdate = new UserDto(1L, "name", "updatedMail@mail.ru");
         when(userRepository.getExistingUser(mainUser.getId())).thenReturn(mainUser);
@@ -111,7 +111,7 @@ class UserServiceMockTest {
     }
 
     @Test
-    void updateUser_whenUserNotFound_thenUserNotFoundExceptionThrown() {
+    void shouldThrowUserNotFoundExceptionWhenUserNotFoundWhileUpdate() {
         User mainUser = new User(1L, "name", "mail@mail.ru");
         UserDto userDataToUpdate = new UserDto(1L, "updatedName", "mail@mail.ru");
         when(userRepository.getExistingUser(mainUser.getId())).thenThrow(UserNotFoundException.class);
@@ -120,7 +120,7 @@ class UserServiceMockTest {
     }
 
     @Test
-    void getAllUsers() {
+    void shouldReturnAllUsers() {
         List<User> users = new ArrayList<>(List.of(user));
         when(userRepository.findAll()).thenReturn(users);
 
@@ -131,7 +131,7 @@ class UserServiceMockTest {
     }
 
     @Test
-    void deleteUser() {
+    void shouldDeleteUser() {
         userService.deleteUser(user.getId());
 
         verify(userRepository, times(1)).deleteById(user.getId());

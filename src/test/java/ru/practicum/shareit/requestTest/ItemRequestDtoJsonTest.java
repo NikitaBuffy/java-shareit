@@ -20,7 +20,7 @@ class ItemRequestDtoJsonTest {
 
     @SneakyThrows
     @Test
-    void testCommentDto() {
+    void shouldSerializeItemRequestDtoToJson() {
         ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "description",
                 LocalDateTime.of(2023, 5, 13, 15, 10, 1), null);
 

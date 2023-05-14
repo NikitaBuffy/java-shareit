@@ -47,7 +47,7 @@ class ItemRequestRepositoryJpaTest {
     }
 
     @Test
-    void findByRequestorIdOrderByCreatedDesc_whenRequestExists_thenReturnedRequests() {
+    void shouldReturnRequestsWhenRequestExistsByRequestorId() {
         List<ItemRequest> itemRequests = itemRequestRepository.findByRequestorIdOrderByCreatedDesc(requestor.getId());
 
         assertEquals(1, itemRequests.size());
@@ -55,14 +55,14 @@ class ItemRequestRepositoryJpaTest {
     }
 
     @Test
-    void findByRequestorIdOrderByCreatedDesc_whenRequestNotExists_thenReturnedEmptyList() {
+    void shouldReturnEmptyListWhenRequestNotExistsByRequestorId() {
         List<ItemRequest> itemRequests = itemRequestRepository.findByRequestorIdOrderByCreatedDesc(owner.getId());
 
         assertEquals(0, itemRequests.size());
     }
 
     @Test
-    void findAllOtherRequests() {
+    void shouldReturnAllOtherRequests() {
         List<ItemRequest> itemRequests = itemRequestRepository.findAllOtherRequests(requestor.getId(), Pageable.unpaged()).getContent();
 
         assertEquals(1, itemRequests.size());
@@ -70,7 +70,7 @@ class ItemRequestRepositoryJpaTest {
     }
 
     @Test
-    void getExistingRequest_whenRequestFound_thenReturnedRequest() {
+    void shouldReturnRequestWhenRequestFound() {
         ItemRequest requestFound = itemRequestRepository.getExistingRequest(itemRequest.getId());
 
         assertNotNull(requestFound);
@@ -78,7 +78,7 @@ class ItemRequestRepositoryJpaTest {
     }
 
     @Test
-    void getExistingRequest_whenRequestNotFound_thenRequestNotFoundExceptionThrown() {
+    void shouldThrowRequestNotFoundExceptionWhenRequestNotFound() {
         assertThrows(RequestNotFoundException.class, () -> itemRequestRepository.getExistingRequest(99L));
     }
 

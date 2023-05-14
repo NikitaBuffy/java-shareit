@@ -35,7 +35,7 @@ class ItemRepositoryJpaTest {
     }
 
     @Test
-    void findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue_whenFound_thenReturnedItem() {
+    void shouldFindItemByText() {
         String text = "Дрель";
         List<Item> items = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text, text,
                 Pageable.unpaged()).getContent();
@@ -44,7 +44,7 @@ class ItemRepositoryJpaTest {
     }
 
     @Test
-    void findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue_whenNotFound_thenReturnedEmptyList() {
+    void shouldReturnEmptyListWhenNotFoundWhileSearch() {
         String text = "Шуруповерт";
         List<Item> items = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text, text,
                 Pageable.unpaged()).getContent();
@@ -53,7 +53,7 @@ class ItemRepositoryJpaTest {
     }
 
     @Test
-    void getExistingItem_whenItemFound_thenReturnedItem() {
+    void shouldReturnItemWhenItemFoundWhileGetExistingItem() {
         Item itemFound = itemRepository.getExistingItem(item.getId());
 
         assertNotNull(itemFound);
@@ -61,7 +61,7 @@ class ItemRepositoryJpaTest {
     }
 
     @Test
-    void getExistingItem_whenItemNotFound_thenItemNotFoundExceptionThrown() {
+    void shouldThrowItemNotFoundExceptionWhenItemNotFoundWhileGetExistingItem() {
         assertThrows(ItemNotFoundException.class, () -> itemRepository.getExistingItem(99L));
     }
 

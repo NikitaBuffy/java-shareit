@@ -59,7 +59,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void requestBooking_whenBookerIsOwner_thenBookingNotFoundExceptionThrown() {
+    void shouldThrowBookingNotFoundExceptionWhenBookerIsOwnerWhileRequestBooking() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
 
@@ -68,7 +68,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void requestBooking_whenItemNotAvailable_thenNotAvailableExceptionThrown() {
+    void shouldThrowNotAvailableExceptionWhenItemNotAvailableWhileRequestBooking() {
         item.setAvailable(false);
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
@@ -78,7 +78,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void requestBooking_whenBookingStartIsAfterEnd_thenDateExceptionThrown() {
+    void shouldThrowDateExceptionWhenBookingStartIsAfterEndWhileRequestBooking() {
         bookingDtoRequest.setStart(LocalDateTime.now().plusMinutes(2));
         bookingDtoRequest.setEnd(LocalDateTime.now());
         when(userRepository.getExistingUser(anyLong())).thenReturn(new User());
@@ -89,7 +89,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void requestBooking_whenBookingStartEqualsEnd_thenDateExceptionThrown() {
+    void shouldThrowDateExceptionWhenBookingStartEqualsEndWhileRequestBooking() {
         bookingDtoRequest.setEnd(bookingDtoRequest.getStart());
         when(userRepository.getExistingUser(anyLong())).thenReturn(new User());
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
@@ -99,7 +99,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void requestBooking_whenBookingValidated_thenReturnedBooking() {
+    void shouldReturnBookingWhenBookingValidatedWhileRequestBooking() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(new User());
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
         when(bookingRepository.save(any(Booking.class))).thenReturn(BookingMapper.requestDtoToBooking(bookingDtoRequest));
@@ -112,14 +112,14 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void confirmBooking_whenBookingNotFound_thenBookingNotFoundExceptionThrown() {
+    void shouldThrowBookingNotFoundExceptionWhenBookingNotFoundWhileConfirmBooking() {
         when(bookingRepository.getExistingBooking(anyLong())).thenThrow(BookingNotFoundException.class);
 
         assertThrows(BookingNotFoundException.class, () -> bookingService.confirmBooking(1L, 1L, true));
     }
 
     @Test
-    void confirmBooking_whenUserNotOwner_thenNotOwnerExceptionThrown() {
+    void shouldThrowNotOwnerExceptionWhenUserNotOwnerWhileConfirmBooking() {
         item.setOwner(new User());
         when(bookingRepository.getExistingBooking(anyLong())).thenReturn(booking);
 
@@ -127,7 +127,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void confirmBooking_whenBookingAlreadyConfirmed_thenAlreadyApprovedExceptionThrown() {
+    void shouldThrowAlreadyApprovedExceptionWhenBookingAlreadyConfirmedWhileConfirmBooking() {
         booking.setStatus(BookingStatus.APPROVED);
         when(bookingRepository.getExistingBooking(anyLong())).thenReturn(booking);
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
@@ -136,7 +136,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void confirmBooking_whenBookingConfirmed_thenReturnedConfirmedBooking() {
+    void shouldReturnConfirmedBookingWhenBookingConfirmed() {
         when(bookingRepository.getExistingBooking(anyLong())).thenReturn(booking);
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
 
@@ -146,7 +146,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void confirmBooking_whenBookingRejected_thenReturnedRejectedBooking() {
+    void shouldReturnRejectedBookingWhenBookingRejected() {
         when(bookingRepository.getExistingBooking(anyLong())).thenReturn(booking);
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
 
@@ -156,7 +156,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void getBooking_whenUserAssociated_thenReturnedUser() {
+    void shouldReturnBookingWhenUserAssociatedWithBooking() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(bookingRepository.getExistingBooking(anyLong())).thenReturn(booking);
 
@@ -166,7 +166,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void getBooking_whenUserNotAssociated_thenNotOwnerExceptionThrown() {
+    void shouldThrowNotOwnerExceptionWhenUserNotAssociatedWithBooking() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         booking.setBooker(new User(2L, "name2", "email2@mail.ru"));
         item.setOwner(new User(3L, "name3", "email3@mail.ru"));
@@ -176,7 +176,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void getUserBookings_whenWithState_thenReturnedBookingList() {
+    void shouldReturnUserBookingsWhenWithState() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(bookingRepository.findByBookerIdAndCurrentTime(anyLong(), any(LocalDateTime.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(booking)));
@@ -210,7 +210,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void getOwnerBookings_whenWithState_thenReturnedBookingList() {
+    void shouldReturnOwnerBookingsWhenWithState() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
         when(bookingRepository.findByOwnerIdAndCurrentTime(anyLong(), any(LocalDateTime.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(booking)));
@@ -244,7 +244,7 @@ class BookingServiceMockTest {
     }
 
     @Test
-    void getOwnerBookings_whenUnknownState_thenIllegalArgumentExceptionThrown() {
+    void shouldThrowIllegalArgumentExceptionWhenUnknownState() {
         when(userRepository.getExistingUser(anyLong())).thenReturn(user);
 
         assertThrows(IllegalArgumentException.class, () -> bookingService.getOwnerBookings(1L,"DECLINED",

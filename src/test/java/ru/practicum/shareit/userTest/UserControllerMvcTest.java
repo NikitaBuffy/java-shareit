@@ -47,7 +47,7 @@ class UserControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getAllUsers() {
+    void shouldReturnOkAndUsersWhileGetAllUsers() {
         List<UserDto> userList = List.of(userDto);
         when(userService.getAllUsers()).thenReturn(userList);
 
@@ -62,7 +62,7 @@ class UserControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getUserById() {
+    void shouldReturnOkAndUserWhileGetUserById() {
         when(userService.getUserById(anyLong())).thenReturn(userDto);
 
         mockMvc.perform(get("/users/1")
@@ -78,7 +78,7 @@ class UserControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getUserById_whenUserNotFound_thenNotFoundExceptionThrown() {
+    void shouldReturnNotFoundWhenUserNotFoundWhileGetUserById() {
         when(userService.getUserById(anyLong())).thenThrow(UserNotFoundException.class);
 
         mockMvc.perform(get("/users/1")
@@ -90,7 +90,7 @@ class UserControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void createUser_whenUserIsValid_thenCreateUser() {
+    void shouldReturnOkAndCreateUserWhenUserValid() {
         when(userService.createUser(any(UserDto.class))).thenReturn(userDto);
 
         String result = mockMvc.perform(post("/users")
@@ -107,7 +107,7 @@ class UserControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void createUser_whenUserIsNotValid_thenReturnedBadRequest() {
+    void shouldReturnBadRequestWhenUserNotValidWhileCreateUser() {
         userDto.setName(null);
         when(userService.createUser(any(UserDto.class))).thenReturn(userDto);
 
@@ -122,7 +122,7 @@ class UserControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void updateUser() {
+    void shouldReturnOkAndUserWhileUpdateUser() {
         when(userService.updateUser(anyLong(), any(UserDto.class))).thenReturn(userDto);
 
         mockMvc.perform(patch("/users/1")
@@ -138,7 +138,7 @@ class UserControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void deleteUser() {
+    void shouldReturnOkWhileDeleteUser() {
         mockMvc.perform(delete("/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

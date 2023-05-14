@@ -18,7 +18,7 @@ class UserDtoJsonTest {
 
     @SneakyThrows
     @Test
-    void testUserDto() {
+    void shouldSerializeUserDtoToJson() {
         UserDto userDto = new UserDto(1L, "name", "email@email.ru");
 
         JsonContent<UserDto> result = json.write(userDto);

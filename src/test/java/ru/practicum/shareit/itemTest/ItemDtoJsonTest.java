@@ -18,7 +18,7 @@ class ItemDtoJsonTest {
 
     @SneakyThrows
     @Test
-    void testCommentDto() {
+    void shouldSerializeItemDtoToJson() {
         ItemDto itemDto = new ItemDto(1L, "name", "description", true, null, null, null, null);
 
         JsonContent<ItemDto> result = json.write(itemDto);

@@ -83,7 +83,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void addItem_whenValid_thenSaveItem() {
+    void shouldSaveItemWhenValidWhileAddItem() {
         when(userService.getUserById(user.getId())).thenReturn(userDto);
         when(itemRepository.save(item)).thenReturn(item);
 
@@ -94,7 +94,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void addItem_whenItemOwnerNotFound_thenUserNotFoundExceptionThrown() {
+    void shouldThrowUserNotFoundExceptionWhenItemOwnerNotFoundWhileAddItem() {
         when(userService.getUserById(anyLong())).thenThrow(UserNotFoundException.class);
 
         assertThrows(UserNotFoundException.class, () -> itemService.addItem(1L, itemDto));
@@ -102,7 +102,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void addItem_whenItemRequestPresent_thenReturnedWithRequest() {
+    void shouldReturnItemWithRequestWhenItemRequestPresentsWhileAddItem() {
         ItemRequest itemRequest = new ItemRequest(1L, "description", user, LocalDateTime.now());
         itemDto.setRequestId(itemRequest.getId());
         item.setRequest(itemRequest);
@@ -117,7 +117,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void editItem_whenUserNotOwner_thenNotOwnerExceptionThrown() {
+    void shouldThrowNotOwnerExceptionWhenUserNotOwnerWhileEditItem() {
         User ownerUser = new User(2L, "owner", "owner@mail.ru");
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
         when(userService.getUserById(anyLong())).thenReturn(UserMapper.userToDto(ownerUser));
@@ -126,7 +126,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void editItem_whenUserOwner_thenReturnedUpdatedItem() {
+    void shouldReturnUpdatedItemWhenUserOwnerWhileEditItem() {
         ItemDto itemDataToUpdate = new ItemDto();
         itemDataToUpdate.setName("updated");
         itemDataToUpdate.setAvailable(false);
@@ -144,7 +144,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void getItemById_whenItemFound_thenReturnedItem() {
+    void shouldReturnItemWhenItemFoundWhileGetItemById() {
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
 
         ItemDto actualItem = itemService.getItemById(userDto.getId(), itemDto.getId());
@@ -153,14 +153,14 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void getItemById_whenItemNotFound_thenItemNotFoundExceptionThrown() {
+    void shouldThrowItemNotFoundExceptionWhenItemNotFoundWhileGetItemById() {
         when(itemRepository.getExistingItem(anyLong())).thenThrow(ItemNotFoundException.class);
 
         assertThrows(ItemNotFoundException.class, () -> itemService.getItemById(item.getId(), user.getId()));
     }
 
     @Test
-    void searchItems() {
+    void shouldSearchItems() {
         when(itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(anyString(), anyString(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(item)));
 
@@ -170,14 +170,14 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void searchItems_whenSearchTextNull_thenReturnedEmptyList() {
+    void shouldReturnEmptyListWhenSearchTextBlankWhileSearchItems() {
         List<ItemDto> items = itemService.searchItems("", 1, 1, ItemSort.ID_DESC);
 
         assertEquals(0, items.size());
     }
 
     @Test
-    void addComment_whenNotBooked_thenBookingExceptionThrown() {
+    void shouldThrowBookingExceptionWhenNotBookedWhileAddComment() {
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
         when(userService.getUserById(anyLong())).thenReturn(userDto);
         when(bookingRepository.findByBookerAndItemIdAndEndBeforeAndStatus(any(User.class),
@@ -187,7 +187,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void addComment_whenBooked_thenReturnedComment() {
+    void shouldAddCCommentWhenBooked() {
         Comment comment = new Comment(1L, "text", item, user, LocalDateTime.now());
         when(itemRepository.getExistingItem(anyLong())).thenReturn(item);
         when(userService.getUserById(anyLong())).thenReturn(userDto);
@@ -204,7 +204,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void getItems() {
+    void shouldGetItems() {
         when(itemRepository.findByOwnerId(anyLong(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(item)));
 
         List<ItemDto> items = itemService.getItems(1L, 0, 10, ItemSort.ID_DESC);
@@ -213,7 +213,7 @@ class ItemServiceMockTest {
     }
 
     @Test
-    void getItems_whenLastAndNextBookingsExist_thenReturnedWithBookings() {
+    void shouldReturnItemsWithBookingsWhenLastAndNextBookingsExistWhileGetItems() {
         Booking lastBooking = new Booking(1L, null, null, item, user, null);
         Booking nextBooking = new Booking(1L, null, null, item, user, null);
         when(itemRepository.findByOwnerId(anyLong(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(item)));

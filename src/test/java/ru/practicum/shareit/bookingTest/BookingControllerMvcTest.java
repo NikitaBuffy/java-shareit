@@ -63,7 +63,7 @@ class BookingControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void requestBooking_whenBookingValid_thenReturnedBooking() {
+    void shouldReturnOkAndBookingWhenBookingValidWhileRequestBooking() {
         when(bookingService.requestBooking(anyLong(), any(BookingDtoRequest.class))).thenReturn(bookingDtoResponse);
 
         String result = mockMvc.perform(post("/bookings")
@@ -81,7 +81,7 @@ class BookingControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void requestBooking_whenBookingNotValid_thenReturnedBadRequest() {
+    void shouldReturnBadRequestWhenBookingNotValidWhileRequestBooking() {
         bookingDtoRequest.setStart(LocalDateTime.of(2020, 10, 10, 10, 0));
         when(bookingService.requestBooking(anyLong(), any(BookingDtoRequest.class))).thenReturn(bookingDtoResponse);
 
@@ -97,7 +97,7 @@ class BookingControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void confirmBooking() {
+    void shouldReturnOkAndBookingWhileConfirmBooking() {
         when(bookingService.confirmBooking(anyLong(), anyLong(), any(Boolean.class))).thenReturn(bookingDtoResponse);
 
         mockMvc.perform(patch("/bookings/1")
@@ -112,7 +112,7 @@ class BookingControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getBooking() {
+    void shouldReturnOkAndBookingWhileGetBooking() {
         when(bookingService.getBooking(anyLong(), anyLong())).thenReturn(bookingDtoResponse);
 
         mockMvc.perform(get("/bookings/1")
@@ -126,7 +126,7 @@ class BookingControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getUserBookings() {
+    void shouldReturnOkAndBookingWhileGetUserBookings() {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("state", "ALL");
         params.add("from", "0");
@@ -148,7 +148,7 @@ class BookingControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getOwnerBookings() {
+    void shouldReturnOkAndBookingWhileGetOwnerBookings() {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("state", "ALL");
         params.add("from", "0");

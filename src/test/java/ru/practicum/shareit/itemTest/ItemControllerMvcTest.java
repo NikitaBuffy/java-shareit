@@ -60,7 +60,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void addItem_whenItemValid_thenReturnedItem() {
+    void shouldReturnOkAndItemWhenItemValidWhileAddItem() {
         when(itemService.addItem(anyLong(), any(ItemDto.class))).thenReturn(itemDto);
 
         String result = mockMvc.perform(post("/items")
@@ -78,7 +78,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void addItem_whenItemNotValid_thenReturnedBadRequest() {
+    void shouldReturnBadRequestWhenItemNotValidWhileAddItem() {
         itemDto.setName(null);
         when(itemService.addItem(anyLong(), any(ItemDto.class))).thenReturn(itemDto);
 
@@ -93,7 +93,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void editItem() {
+    void shouldReturnOkAndEditedItem() {
         when(itemService.editItem(anyLong(), anyLong(), any(ItemDto.class))).thenReturn(itemDto);
 
         mockMvc.perform(patch("/items/1")
@@ -111,7 +111,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void editItem_whenNotOwner_thenNotOwnerExceptionThrown() {
+    void shouldReturnNotFoundWhenNotOwnerWhileEditItem() {
         when(itemService.editItem(anyLong(), anyLong(), any(ItemDto.class))).thenThrow(NotOwnerException.class);
 
         mockMvc.perform(patch("/items/1")
@@ -124,7 +124,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getItemById() {
+    void shouldReturnOkAndItemById() {
         when(itemService.getItemById(anyLong(), anyLong())).thenReturn(itemDto);
 
         mockMvc.perform(get("/items/1")
@@ -138,7 +138,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void getItems() {
+    void shouldReturnOkAndItems() {
         when(itemService.getItems(anyLong(), anyInt(), anyInt(), eq(null))).thenReturn(items);
 
         mockMvc.perform(get("/items")
@@ -154,7 +154,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void searchItems() {
+    void shouldReturnOkAndItemsBySearchText() {
         when(itemService.searchItems(anyString(), anyInt(), anyInt(), eq(null))).thenReturn(items);
 
         mockMvc.perform(get("/items/search")
@@ -171,7 +171,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void addComment() {
+    void shouldReturnOkAndAddedComment() {
         when(itemService.addComment(anyLong(), anyLong(), any(CommentDto.class))).thenReturn(commentDto);
 
         String result = mockMvc.perform(post("/items/1/comment")
@@ -190,7 +190,7 @@ class ItemControllerMvcTest {
 
     @SneakyThrows
     @Test
-    void addComment_whenBookingEmpty_thenBookingExceptionThrown() {
+    void shouldReturnBadRequestWhenBookingEmptyWhileAddComment() {
         when(itemService.addComment(anyLong(), anyLong(), any(CommentDto.class))).thenThrow(BookingException.class);
 
         mockMvc.perform(post("/items/1/comment")

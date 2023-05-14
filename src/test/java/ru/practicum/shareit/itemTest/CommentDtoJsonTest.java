@@ -20,7 +20,7 @@ class CommentDtoJsonTest {
 
     @SneakyThrows
     @Test
-    void testCommentDto() {
+    void shouldSerializeCommentDtoToJson() {
         CommentDto commentDto = new CommentDto(1L, "text", "John",
                 LocalDateTime.of(2023, 5, 13, 15, 10, 1));
 
