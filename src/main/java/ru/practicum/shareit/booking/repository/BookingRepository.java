@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,37 +16,35 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByBookerAndStatus(User booker, BookingStatus status);
+    Page<Booking> findByBookerAndStatus(User booker, BookingStatus status, Pageable pageable);
 
-    List<Booking> findByBooker(User booker);
+    Page<Booking> findByBooker(User booker, Pageable pageable);
 
-    List<Booking> findByBookerAndEndBefore(User booker, LocalDateTime currentTime);
+    Page<Booking> findByBookerAndEndBefore(User booker, LocalDateTime currentTime, Pageable pageable);
 
     List<Booking> findByBookerAndItemIdAndEndBeforeAndStatus(User booker, Long itemId,
                                                              LocalDateTime currentTime, BookingStatus status);
 
-    List<Booking> findByBookerAndStartAfter(User booker, LocalDateTime currentTime);
+    Page<Booking> findByBookerAndStartAfter(User booker, LocalDateTime currentTime, Pageable pageable);
 
-    @Query(value = "SELECT * FROM bookings " +
-            "WHERE booker_id = :bookerId " +
-            "AND :currentTime BETWEEN start_date AND end_date",
-            nativeQuery = true)
-    List<Booking> findByBookerIdAndCurrentTime(Long bookerId, LocalDateTime currentTime);
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = :bookerId " +
+            "AND :currentTime BETWEEN b.start AND b.end")
+    Page<Booking> findByBookerIdAndCurrentTime(Long bookerId, LocalDateTime currentTime, Pageable pageable);
 
-    List<Booking> findByItemOwnerAndStatus(User owner, BookingStatus status);
+    Page<Booking> findByItemOwnerAndStatus(User owner, BookingStatus status, Pageable pageable);
 
-    List<Booking> findByItemOwner(User owner);
+    Page<Booking> findByItemOwner(User owner, Pageable pageable);
 
-    List<Booking> findByItemOwnerAndEndBefore(User owner, LocalDateTime currentTime);
+    Page<Booking> findByItemOwnerAndEndBefore(User owner, LocalDateTime currentTime, Pageable pageable);
 
-    List<Booking> findByItemOwnerAndStartAfter(User owner, LocalDateTime currentTime);
+    Page<Booking> findByItemOwnerAndStartAfter(User owner, LocalDateTime currentTime, Pageable pageable);
 
-    @Query(value = "SELECT * FROM bookings b " +
-            "LEFT JOIN items i on b.item_id = i.item_id " +
-            "WHERE i.owner_id = :ownerId " +
-            "AND :currentTime BETWEEN start_date AND end_date",
-            nativeQuery = true)
-    List<Booking> findByOwnerIdAndCurrentTime(Long ownerId, LocalDateTime currentTime);
+    @Query("SELECT b FROM Booking b " +
+            "LEFT JOIN b.item i " +
+            "WHERE i.owner.id = :ownerId " +
+            "AND :currentTime BETWEEN b.start AND b.end")
+    Page<Booking> findByOwnerIdAndCurrentTime(Long ownerId, LocalDateTime currentTime, Pageable pageable);
 
     Booking findFirstByItemIdAndStartBeforeAndStatusOrderByStartDesc(Long itemId, LocalDateTime currentTime, BookingStatus status);
 

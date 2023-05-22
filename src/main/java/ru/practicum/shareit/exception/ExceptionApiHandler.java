@@ -38,6 +38,14 @@ public class ExceptionApiHandler {
                 .body(new ErrorResponse(exception.getMessage()));
     }
 
+    @ExceptionHandler(RequestNotFoundException.class)
+    public ResponseEntity<ErrorResponse> requestNotFoundException(RequestNotFoundException exception) {
+        log.debug(exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(exception.getMessage()));
+    }
+
     @ExceptionHandler(NotOwnerException.class)
     public ResponseEntity<ErrorResponse> notOwnerException(NotOwnerException exception) {
         log.debug(exception.getMessage());

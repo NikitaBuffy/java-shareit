@@ -14,7 +14,8 @@ public class ItemMapper {
                 item.getAvailable(),
                 null,
                 null,
-                null
+                null,
+                item.getRequest() == null ? null : item.getRequest().getId()
         );
     }
 

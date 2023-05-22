@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,9 +38,8 @@ public class BookingMapper {
         );
     }
 
-    public static List<BookingDtoResponse> bookingDtoResponseListSorted(List<Booking> bookingList) {
+    public static List<BookingDtoResponse> bookingDtoResponseList(List<Booking> bookingList) {
         return bookingList.stream()
-                .sorted(Comparator.comparing(Booking::getStart).reversed())
                 .map(BookingMapper::bookingToDtoResponse)
                 .collect(Collectors.toList());
     }
